@@ -1,3 +1,5 @@
+import { APP_NAME } from "@/constants/pages";
+import { ThemeProvider } from "@/contexts/theme-provider";
 import "@/styles/globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
@@ -6,7 +8,10 @@ import { ReactNode } from "react";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "ProStore",
+  title: {
+    template: `%s | Prostore`,
+    default: APP_NAME,
+  },
   description: "An ecommerce store for all your needs",
 };
 
@@ -16,8 +21,17 @@ type RootLayoutProps = {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="en">
-      <body className={`${inter.className} antialiased`}>{children}</body>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${inter.className} antialiased`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   );
 }
