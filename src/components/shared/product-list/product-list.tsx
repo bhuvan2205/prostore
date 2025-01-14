@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import ProductCard from "./product-card";
+import { Product } from "@prisma/client";
 
 type ProductListProps = {
-  data: any;
+  data: Product[];
   title?: string;
   limit?: number;
 };
@@ -17,7 +18,7 @@ const ProductList = (props: ProductListProps) => {
       <h2 className="h2-bold mb-4">{title}</h2>
       {limitData?.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {limitData?.map((product: any) => (
+          {limitData?.map((product: Product) => (
             <ProductCard key={product.slug} product={product} />
           ))}
         </div>

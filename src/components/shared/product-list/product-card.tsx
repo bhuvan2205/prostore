@@ -2,10 +2,10 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
 import ProductPrice from "./product-price";
+import { Product } from "@prisma/client";
 
 type ProductCardProps = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  product: any;
+  product: Product;
 };
 
 const ProductCard = (props: ProductCardProps) => {
@@ -15,7 +15,7 @@ const ProductCard = (props: ProductCardProps) => {
       <CardHeader className="p-0 items-center">
         <Link href={`/product/${product?.slug}`}>
           <Image
-            src={product?.images?.at(0)}
+            src={product?.images?.at(0) || ''}
             alt={product?.name}
             priority
             width={300}
@@ -24,14 +24,14 @@ const ProductCard = (props: ProductCardProps) => {
         </Link>
       </CardHeader>
       <CardContent className="p-4 grid gap-4">
-        <div className="text-xs">{product.brand}</div>
+        <div className="text-xs">{product?.brand}</div>
         <Link href={`/product/${product?.slug}`}>
-          <h2 className="text-sm font-medium">{product.medium}</h2>
+          <h2 className="text-sm font-medium">{product?.name}</h2>
         </Link>
         <div className="flex-between gap-4">
-          <p>{product.rating} Stars</p>
-          {product.stock > 0 ? (
-            <ProductPrice amount={Number(product.price)} />
+          <p>{product?.rating?.toString()} Stars</p>
+          {product?.stock > 0 ? (
+            <ProductPrice amount={Number(product?.price?.toString())} />
           ) : (
             <p className="text-destructive">Out of Stock</p>
           )}
@@ -40,5 +40,4 @@ const ProductCard = (props: ProductCardProps) => {
     </Card>
   );
 };
-
 export default ProductCard;
