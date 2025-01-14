@@ -1,5 +1,4 @@
 import { APP_NAME } from "@/constants/pages";
-import React from "react";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();

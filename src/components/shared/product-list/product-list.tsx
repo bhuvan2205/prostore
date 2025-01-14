@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React from "react";
 import ProductCard from "./product-card";
 import { Product } from "@/types";
 
