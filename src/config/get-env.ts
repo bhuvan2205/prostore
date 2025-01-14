@@ -1,5 +1,6 @@
 export const variables = {
   NEXT_PUBLIC_APP_URL: "NEXT_PUBLIC_APP_URL",
+  DATABASE_URL: "DATABASE_URL",
 };
 
 export const getEnv = (key: keyof typeof variables) => {
