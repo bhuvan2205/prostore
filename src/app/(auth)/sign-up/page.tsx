@@ -8,12 +8,28 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import SignUpForm from "./_components/signUp-form";
+import { auth } from "@/config/auth";
+import { redirect } from "next/navigation";
+import { ROUTES } from "@/constants/routes";
 
 export const metadata = {
   title: "Sign In",
 };
 
-const SignUpPage = () => {
+type SignUpPageProps = {
+  searchParams: Promise<{
+    callbackUrl: string;
+  }>;
+};
+
+const SignUpPage = async (props: SignUpPageProps) => {
+  const { callbackUrl } = await props.searchParams;
+  const session = await auth();
+
+  if (session) {
+    return redirect(callbackUrl || ROUTES.HOME);
+  }
+
   return (
     <div className="w-full mx-auto max-w-md">
       <Card>

@@ -13,8 +13,8 @@ import {
   EllipsisVertical,
   ShoppingCart,
   ShoppingCartIcon,
-  User,
 } from "lucide-react";
+import UserButton from "./user-button";
 
 const Navbar = () => {
   return (
@@ -26,11 +26,7 @@ const Navbar = () => {
             <ShoppingCart /> Cart
           </Link>
         </Button>
-        <Button asChild>
-          <Link href={ROUTES.LOGIN}>
-            <User /> Login
-          </Link>
-        </Button>
+        <UserButton />
       </nav>
       <nav className="md:hidden">
         <Sheet>
@@ -45,11 +41,7 @@ const Navbar = () => {
                 <ShoppingCartIcon /> Cart
               </Link>
             </Button>
-            <Button asChild>
-              <Link href={ROUTES.LOGIN}>
-                <User /> Login
-              </Link>
-            </Button>
+            <UserButton />
             <SheetDescription></SheetDescription>
           </SheetContent>
         </Sheet>

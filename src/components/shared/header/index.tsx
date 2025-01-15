@@ -1,7 +1,7 @@
 import { APP_NAME } from "@/constants/pages";
 import Image from "next/image";
 import Link from "next/link";
-import Navbar from "./Navbar";
+import Navbar from "./navbar";
 
 const Header = () => {
   return (
