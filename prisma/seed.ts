@@ -13,11 +13,12 @@ const main = async () => {
   await prisma.product.createMany({
     data: sampleData.products,
   });
+
   await prisma.user.createMany({
     data: sampleData.users,
   });
 
-  console.log("Database seeded successfully!");
+  console.log("🍀Database seeded successfully!");
 };
 
 main()

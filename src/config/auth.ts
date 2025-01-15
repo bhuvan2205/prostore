@@ -2,7 +2,7 @@ import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "./db";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { compareSync } from "bcrypt-ts-edge";
+import { compare } from "bcrypt-ts-edge";
 import type { NextAuthConfig } from "next-auth";
 
 export const config = {
@@ -33,7 +33,7 @@ export const config = {
         });
 
         if (user && user.password) {
-          const isValidPassword = compareSync(
+          const isValidPassword = await compare(
             credentials.password as string,
             user.password
           );
@@ -55,6 +55,7 @@ export const config = {
   callbacks: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async session({ session, token, trigger, user }: any) {
+
       // Set the user ID from the token to the session
       session.user.id = token.sub;
 
