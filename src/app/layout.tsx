@@ -1,3 +1,4 @@
+import { Toaster } from "@/components/ui/toaster";
 import { APP_NAME } from "@/constants/pages";
 import { ThemeProvider } from "@/contexts/theme-provider";
 import "@/styles/globals.css";
@@ -30,6 +31,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           disableTransitionOnChange
         >
           {children}
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

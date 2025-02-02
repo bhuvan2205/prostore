@@ -4,6 +4,8 @@ import { prisma } from "./db";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcrypt-ts-edge";
 import type { NextAuthConfig } from "next-auth";
+import { NextResponse } from 'next/server';
+import { SESSION_CART_ID } from "@/constants/cart";
 
 export const config = {
   pages: {
@@ -85,6 +87,30 @@ export const config = {
         }
       }
       return token;
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    authorized({ request }: any) {
+      if (!request.cookies.get(SESSION_CART_ID)) {
+        // Generate new session cart id cookie
+        const sessionCartId = crypto.randomUUID();
+
+        // Clone the req headers
+        const newRequestHeaders = new Headers(request.headers);
+
+        // Create new response and add the new headers
+        const response = NextResponse.next({
+          request: {
+            headers: newRequestHeaders,
+          },
+        });
+
+        // Set newly generated sessionCartId in the response cookies
+        response.cookies.set(SESSION_CART_ID, sessionCartId);
+
+        return response;
+      } else {
+        return true;
+      }
     },
   },
 } satisfies NextAuthConfig;

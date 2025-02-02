@@ -23,6 +23,7 @@ export const capitalize = (str: string) =>
 export const formatErrors = (error: any) => {
   if (error.name === "ZodError") {
     const errors = Object.keys(error.errors).map((key) => {
+      console.log(error.errors[key]);
       return error.errors[key].message;
     });
 
@@ -40,5 +41,15 @@ export const formatErrors = (error: any) => {
       return error.message;
     }
     return "Request failed";
+  }
+};
+
+export const roundTwoDigit = (value: number | string) => {
+  if (typeof value === "number") {
+    return Math.round((value + Number.EPSILON) * 100) / 100;
+  } else if (typeof value === "string") {
+    return Math.round((Number(value) + Number.EPSILON) * 100) / 100;
+  } else {
+    throw new Error("Invalid input type");
   }
 };

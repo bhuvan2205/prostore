@@ -42,6 +42,7 @@ model User {
   updatedAt     DateTime  @updatedAt
   account       Account[]
   session       Session[]
+  cart          Cart[]
 }
 
 model Account {
@@ -77,4 +78,18 @@ model VerificationRequest {
   updatedAt  DateTime @updatedAt
 
   @@id([identifier, token])
+}
+
+model Cart {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId        String?  @db.Uuid
+  sessionCartId String
+  lineItems     Json[]   @default([]) @db.Json
+  subtotal      Decimal  @default(0) @db.Decimal(12, 2)
+  shippingCost  Decimal  @default(0) @db.Decimal(12, 2)
+  taxCost       Decimal  @default(0) @db.Decimal(12, 2)
+  total         Decimal  @default(0) @db.Decimal(12, 2)
+  createdAt     DateTime @default(now()) @db.Timestamp(6)
+  updatedAt     DateTime @updatedAt
+  User          User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
