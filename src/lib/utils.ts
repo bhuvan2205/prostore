@@ -53,3 +53,19 @@ export const roundTwoDigit = (value: number | string) => {
     throw new Error("Invalid input type");
   }
 };
+
+const CURRENCY_FORMATTER = new Intl.NumberFormat("en-US", {
+  currency: "USD",
+  style: "currency",
+  minimumFractionDigits: 2,
+});
+
+export const formatCurrency = (value: number | string | null) => {
+  if (typeof value === "number") {
+    return CURRENCY_FORMATTER.format(value);
+  } else if (typeof value === "string") {
+    return CURRENCY_FORMATTER.format(Number(value));
+  }
+
+  return "NaN";
+};
