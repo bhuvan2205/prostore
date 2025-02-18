@@ -15,9 +15,10 @@ import { ROUTES } from "@/constants/routes";
 import { toast } from "@/hooks/use-toast";
 import { formatCurrency } from "@/lib/utils";
 import { Cart } from "@/types";
-import { Loader, Minus, Plus } from "lucide-react";
+import { ArrowRight, Loader, Minus, Plus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
 type CartTableProps = {
@@ -26,6 +27,7 @@ type CartTableProps = {
 
 const CartTable = (props: CartTableProps) => {
   const { cart } = props || {};
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
   return (
@@ -128,6 +130,18 @@ const CartTable = (props: CartTableProps) => {
                   {formatCurrency(cart.subtotal)}
                 </span>
               </div>
+              <Button
+                className="w-full"
+                onClick={() => {
+                  startTransition(() => router.push(ROUTES.SHIPPING_ADDRESS));
+                }}
+              >
+                {isPending ? (
+                  <Loader className="w-4 h-4 animate-spin" />
+                ) : (
+                  <ArrowRight className="w-4 h-4" />
+                )} Proceed
+              </Button>
             </CardContent>
           </Card>
         </div>
