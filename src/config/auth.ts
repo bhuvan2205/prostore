@@ -1,11 +1,13 @@
-import NextAuth from "next-auth";
+import { SESSION_CART_ID } from "@/constants/cart";
+import { PROTECTED_ROUTES, TRIGGER_EVENTS } from "@/constants/user";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { prisma } from "./db";
-import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcrypt-ts-edge";
 import type { NextAuthConfig } from "next-auth";
-import { NextResponse } from 'next/server';
-import { SESSION_CART_ID } from "@/constants/cart";
+import NextAuth from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
+import { prisma } from "./db";
 
 export const config = {
   pages: {
@@ -69,9 +71,10 @@ export const config = {
       return session;
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    async jwt({ token, user }: any) {
+    async jwt({ token, user, trigger }: any) {
       // Persist the OAuth access_token and or the user id to the token right after signin
       if (user) {
+        token.id = user.id;
         token.role = user.role;
         if (user.name === "NO_NAME") {
           token.name = user?.email.split("@")?.at(0);
@@ -85,11 +88,44 @@ export const config = {
             },
           });
         }
+
+        if (
+          trigger === TRIGGER_EVENTS.SIGN_IN ||
+          trigger === TRIGGER_EVENTS.SIGN_UP
+        ) {
+          const cookiesObject = await cookies();
+          const sessionCartId = cookiesObject.get(SESSION_CART_ID)?.value;
+
+          if (sessionCartId) {
+            const sessionCart = await prisma.cart.findFirst({
+              where: { sessionCartId },
+            });
+
+            if (sessionCart) {
+              // Delete current cart
+              await prisma.cart.deleteMany({ where: { userId: user.id } });
+
+              // Assign new cart to the user
+              await prisma.cart.update({
+                where: { id: sessionCartId },
+                data: { userId: user.id },
+              });
+            }
+          }
+        }
       }
       return token;
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    authorized({ request }: any) {
+    authorized({ request, auth }: any) {
+      // Get the pathname from the request
+      const { pathname } = request.nextUrl;
+
+      // If the user is authenticated and the route is protected, return true
+      if (!auth && PROTECTED_ROUTES.some((route) => route.test(pathname))) {
+        return false;
+      }
+
       if (!request.cookies.get(SESSION_CART_ID)) {
         // Generate new session cart id cookie
         const sessionCartId = crypto.randomUUID();
