@@ -40,7 +40,6 @@ const PaymentMethodForm = (props: PaymentMethodFormProps) => {
   });
 
   const onSubmit = async (formData: z.infer<typeof paymentMethodSchema>) => {
-    console.log(formData);
     startTransition(async () => {
       const res = await updateUserPaymentMethod(formData);
 
