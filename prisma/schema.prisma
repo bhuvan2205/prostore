@@ -26,25 +26,25 @@ model Product {
   isFeatured  Boolean     @default(false)
   banner      String?
   createdAt   DateTime    @default(now()) @db.Timestamp(6)
-  OrderItem   OrderItem[]
+  orderItems   OrderItem[]
 }
 
 model User {
-  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name          String    @default("NO_NAME")
-  email         String?   @unique(map: "user_email_idx")
-  emailVerified DateTime? @db.Timestamp(6)
-  image         String?
-  password      String?
-  role          String    @default("user")
-  address       Json?     @db.Json
-  paymentInfo   String?
-  createdAt     DateTime  @default(now()) @db.Timestamp(6)
-  updatedAt     DateTime  @updatedAt
-  account       Account[]
-  session       Session[]
-  cart          Cart[]
-  Order         Order[]
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name            String    @default("NO_NAME")
+  email           String?   @unique(map: "user_email_idx")
+  emailVerified   DateTime? @db.Timestamp(6)
+  image           String?
+  password        String?
+  role            String    @default("user")
+  shippingAddress Json?     @db.Json
+  paymentInfo     String?
+  createdAt       DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt       DateTime  @updatedAt
+  account         Account[]
+  session         Session[]
+  cart            Cart[]
+  order           Order[]
 }
 
 model Account {
@@ -93,7 +93,7 @@ model Cart {
   total         Decimal  @default(0) @db.Decimal(12, 2)
   createdAt     DateTime @default(now()) @db.Timestamp(6)
   updatedAt     DateTime @updatedAt
-  User          User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Order {
@@ -101,7 +101,7 @@ model Order {
   userId          String      @db.Uuid
   shippingAddress Json        @db.Json
   paymentInfo     String
-  paymentResult   Json        @db.Json
+  paymentResult   Json?       @db.Json
   subtotal        Decimal     @db.Decimal(12, 2)
   shippingCost    Decimal     @default(0) @db.Decimal(12, 2)
   taxCost         Decimal     @default(0) @db.Decimal(12, 2)
@@ -112,8 +112,8 @@ model Order {
   deliveredAt     DateTime?   @db.Timestamp(6)
   createdAt       DateTime    @default(now()) @db.Timestamp(6)
   updatedAt       DateTime    @updatedAt
-  User            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  OrderItem       OrderItem[]
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orderItems       OrderItem[]
 }
 
 model OrderItem {

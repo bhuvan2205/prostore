@@ -1,4 +1,3 @@
-import React from "react";
 import CartTable from "./_components/cart-table";
 import { getMyCart } from "@/actions/cart";
 

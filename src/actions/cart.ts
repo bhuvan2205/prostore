@@ -49,7 +49,6 @@ export const addItemToCart = async (data: LineItem) => {
         data: newCart,
       });
     } else {
-      console.log("cart found");
 
       const existingLineItem = cart.lineItems.find(
         (item) => item.productId === lineItem.productId

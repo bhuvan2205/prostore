@@ -51,7 +51,7 @@ export const signUpUser = async (prevState: unknown, formData: FormData) => {
 
     const hashedPassword = hashSync(user.password, HASH_SALT_ROUNDS);
 
-    const createdUser = await prisma.user.create({
+    await prisma.user.create({
       data: {
         name: user.name,
         email: user.email,
@@ -59,18 +59,13 @@ export const signUpUser = async (prevState: unknown, formData: FormData) => {
       },
     });
 
-    console.log("createdUser", createdUser);
-
     await signIn("credentials", {
       email: user.email,
       password: user.password,
     });
 
-    console.log("true");
-
     return { success: true, message: "User registered successfully" };
   } catch (error) {
-    console.log("error", error);
     if (isRedirectError(error)) {
       throw error;
     }
@@ -104,12 +99,12 @@ export const updateUserAddress = async (data: unknown) => {
       throw new Error("User not found");
     }
 
-    const address = shippingAddressSchema.parse(data);
+    const shippingAddress = shippingAddressSchema.parse(data);
 
     await prisma.user.update({
       where: { id: user?.id },
       data: {
-        address,
+        shippingAddress,
       },
     });
 
