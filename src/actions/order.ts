@@ -1,7 +1,7 @@
 "use server";
 
 import { auth } from "@/config/auth";
-import { formatErrors } from "@/lib/utils";
+import { convertToPlainObject, formatErrors } from "@/lib/utils";
 import { getMyCart } from "./cart";
 import { getUserById } from "./user";
 import { ROUTES } from "@/constants/routes";
@@ -93,7 +93,7 @@ export const createOrder = async () => {
 };
 
 export const getOrderById = async (id: string) => {
-  return await prisma.order.findFirst({
+ const data =  await prisma.order.findFirst({
     where: {
       id,
     },
@@ -102,4 +102,6 @@ export const getOrderById = async (id: string) => {
       user: { select: { name: true, email: true } },
     },
   });
+
+  return convertToPlainObject(data);
 };

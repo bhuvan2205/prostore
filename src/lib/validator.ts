@@ -99,4 +99,5 @@ export const insertOrderItemSchema = z.object({
   quantity: z.number().int().nonnegative("Quantity must be a positive integer"),
   price: currency,
   image: z.string(),
+  name: z.string(),
 });

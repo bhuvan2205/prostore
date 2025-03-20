@@ -1,12 +1,12 @@
-import { Pool, neonConfig } from '@neondatabase/serverless';
-import { PrismaNeon } from '@prisma/adapter-neon';
-import { PrismaClient } from '@prisma/client';
-import ws from 'ws';
-import { getEnv } from './get-env';
+import { Pool, neonConfig } from "@neondatabase/serverless";
+import { PrismaNeon } from "@prisma/adapter-neon";
+import { PrismaClient } from "@prisma/client";
+import ws from "ws";
+import { getEnv } from "./get-env";
 
 // Sets up WebSocket connections, which enables Neon to use WebSocket communication.
 neonConfig.webSocketConstructor = ws;
-const connectionString = getEnv('DATABASE_URL');
+const connectionString = getEnv("DATABASE_URL");
 
 // Creates a new connection pool using the provided connection string, allowing multiple concurrent connections.
 const pool = new Pool({ connectionString });
@@ -26,6 +26,65 @@ export const prisma = new PrismaClient({ adapter }).$extends({
       rating: {
         compute(product) {
           return product.rating.toString();
+        },
+      },
+    },
+    cart: {
+      subtotal: {
+        needs: { subtotal: true },
+        compute(cart) {
+          return cart.subtotal.toString();
+        },
+      },
+      total: {
+        needs: { total: true },
+        compute(cart) {
+          return cart.total.toString();
+        },
+      },
+      shippingCost: {
+        needs: { shippingCost: true },
+        compute(cart) {
+          return cart.shippingCost.toString();
+        },
+      },
+      taxCost: {
+        needs: { taxCost: true },
+        compute(cart) {
+          return cart.taxCost.toString();
+        },
+      },
+    },
+    order: {
+      subtotal: {
+        needs: { subtotal: true },
+        compute(cart) {
+          return cart.subtotal.toString();
+        },
+      },
+      total: {
+        needs: { total: true },
+        compute(cart) {
+          return cart.total.toString();
+        },
+      },
+      shippingCost: {
+        needs: { shippingCost: true },
+        compute(cart) {
+          return cart.shippingCost.toString();
+        },
+      },
+      taxCost: {
+        needs: { taxCost: true },
+        compute(cart) {
+          return cart.taxCost.toString();
+        },
+      },
+    },
+    orderItem: {
+      price: {
+        compute(orderItem) {
+          return orderItem.price.toString();
         },
       },
     },
