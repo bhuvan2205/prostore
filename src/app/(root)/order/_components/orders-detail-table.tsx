@@ -54,9 +54,9 @@ const OrdersDetailTable = (props: OrdersDetailTableProps) => {
           <Card className="mb-2">
             <CardContent className="p-4 gap-4">
               <h2 className="pb-4 text-xl">Shipping Address</h2>
-              <p className="mb-2">{paymentInfo}</p>
-              <p>
-                {shippingAddress.fullName}, {shippingAddress.city},
+              <p>{paymentInfo}</p>
+              <p className="mb-2">
+                {shippingAddress.fullName}, {shippingAddress.city},{" "}
                 {shippingAddress.postalCode}, {shippingAddress.country}
               </p>
               {isDelivered ? (
