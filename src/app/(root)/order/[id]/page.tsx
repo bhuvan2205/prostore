@@ -1,8 +1,8 @@
 import { getOrderById } from "@/actions/order";
+import { getEnv } from "@/config/get-env";
+import { ShippingAddress } from "@/types";
 import { notFound } from "next/navigation";
 import OrdersDetailTable from "../_components/orders-detail-table";
-import { ShippingAddress } from "@/types";
-import { getEnv } from "@/config/get-env";
 
 type OrderDetailsPageProps = {
   params: Promise<{

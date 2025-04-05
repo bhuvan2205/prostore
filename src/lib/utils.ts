@@ -23,7 +23,6 @@ export const capitalize = (str: string) =>
 export const formatErrors = (error: any) => {
   if (error.name === "ZodError") {
     const errors = Object.keys(error.errors).map((key) => {
-      console.log(error.errors[key]);
       return error.errors[key].message;
     });
 

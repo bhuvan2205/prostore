@@ -1,5 +1,5 @@
-import CartTable from "./_components/cart-table";
 import { getMyCart } from "@/actions/cart";
+import CartTable from "./_components/cart-table";
 
 const CartPage = async () => {
   const cart = await getMyCart();

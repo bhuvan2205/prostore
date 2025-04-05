@@ -43,7 +43,6 @@ export const addItemToCart = async (data: LineItem) => {
         sessionCartId,
         ...calcPrice([lineItem]),
       });
-      console.log(newCart);
 
       await prisma.cart.create({
         data: newCart,

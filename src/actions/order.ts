@@ -249,3 +249,25 @@ const updateOrderToPaid = async (payload: {
 
   if (!updatedOrder) throw new Error("Order not found");
 };
+
+export const getMyOrders = async (payload: { limit: number; page: number }) => {
+  const { limit, page } = payload || {};
+
+  const session = await auth();
+  if (!session) throw new Error("User not found");
+
+  const userId = session?.user?.id;
+  if (!userId) throw new Error("User not found");
+
+  const data = await prisma.order.findMany({
+    where: { userId },
+    orderBy: { createdAt: "desc" },
+    take: limit,
+    skip: (page - 1) * limit,
+  });
+
+  const dataCount = await prisma.order.count({ where: { userId } });
+  const totalPages = Math.ceil(dataCount / limit);
+
+  return { data, totalPages };
+};

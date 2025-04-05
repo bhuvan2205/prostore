@@ -50,10 +50,10 @@ const OrdersDetailTable = (props: OrdersDetailTableProps) => {
     const [{ isPending, isRejected }] = usePayPalScriptReducer();
     let status = "";
     if (isPending) {
-      status = "Loading...";
+      status = "Loading Paypal...";
     }
     if (isRejected) {
-      status = "Failed to load the PayPal SDK. Please contact support.";
+      status = "Failed to load PayPal";
     }
     return status;
   };
@@ -177,13 +177,15 @@ const OrdersDetailTable = (props: OrdersDetailTableProps) => {
                 <div>{formatCurrency(total)}</div>
               </div>
               {!isPaid && paymentInfo === "PayPal" && (
-                <PayPalScriptProvider options={{ clientId: paypalClientId }}>
-                  <PrintLoadingState />
-                  <PayPalButtons
-                    createOrder={handleCreateOrder}
-                    onApprove={handleApprove}
-                  />
-                </PayPalScriptProvider>
+                <div>
+                  <PayPalScriptProvider options={{ clientId: paypalClientId }}>
+                    <PrintLoadingState />
+                    <PayPalButtons
+                      createOrder={handleCreateOrder}
+                      onApprove={handleApprove}
+                    />
+                  </PayPalScriptProvider>
+                </div>
               )}
             </CardContent>
           </Card>

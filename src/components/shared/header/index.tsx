@@ -1,7 +1,7 @@
 import { APP_NAME } from "@/constants/pages";
 import Image from "next/image";
 import Link from "next/link";
-import Navbar from "./navbar";
+import UserMenu from "./user-menu";
 
 const Header = () => {
   return (
@@ -21,7 +21,7 @@ const Header = () => {
             </span>
           </Link>
         </div>
-        <Navbar />
+        <UserMenu />
       </div>
     </header>
   );

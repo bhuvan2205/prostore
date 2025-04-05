@@ -5,14 +5,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { auth } from "@/config/auth";
+import { ROUTES } from "@/constants/routes";
+import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import SignInForm from "./_components/signIn-form";
-import { auth } from "@/config/auth";
 import { redirect } from "next/navigation";
-import { ROUTES } from "@/constants/routes";
+import SignInForm from "./_components/signIn-form";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Sign In",
 };
 

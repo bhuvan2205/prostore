@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import UserButton from "./user-button";
 
-const Navbar = () => {
+const UserMenu = () => {
   return (
     <div className="flex justify-end gap-3">
       <nav className="hidden w-full max-w-sm gap-1 md:flex">
@@ -42,7 +42,7 @@ const Navbar = () => {
               </Link>
             </Button>
             <UserButton />
-            <SheetDescription></SheetDescription>
+            <SheetDescription />
           </SheetContent>
         </Sheet>
       </nav>
@@ -50,4 +50,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default UserMenu;
