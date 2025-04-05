@@ -1,3 +1,5 @@
+"use client";
+
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -12,13 +14,21 @@ import { formatCurrency, formatDateTime, formatId } from "@/lib/utils";
 import { Order } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
+import {
+  PayPalScriptProvider,
+  PayPalButtons,
+  usePayPalScriptReducer,
+} from "@paypal/react-paypal-js";
+import { useToast } from "@/hooks/use-toast";
+import { approvePayPalOrder, createPayPalOrder } from "@/actions/order";
 
 type OrdersDetailTableProps = {
   order: Order;
+  paypalClientId: string;
 };
 
 const OrdersDetailTable = (props: OrdersDetailTableProps) => {
-  const { order } = props || {};
+  const { order, paypalClientId } = props || {};
   const {
     orderItems,
     shippingAddress,
@@ -31,7 +41,45 @@ const OrdersDetailTable = (props: OrdersDetailTableProps) => {
     isDelivered,
     paidAt,
     deliveredAt,
+    id: orderId,
   } = order || {};
+
+  const { toast } = useToast();
+
+  const PrintLoadingState = () => {
+    const [{ isPending, isRejected }] = usePayPalScriptReducer();
+    let status = "";
+    if (isPending) {
+      status = "Loading...";
+    }
+    if (isRejected) {
+      status = "Failed to load the PayPal SDK. Please contact support.";
+    }
+    return status;
+  };
+
+  const handleCreateOrder = async () => {
+    const res = await createPayPalOrder(orderId);
+    if (!res.success) {
+      toast({
+        variant: "destructive",
+        description: res.message,
+      });
+    }
+    return res.data;
+  };
+
+  const handleApprove = async (data: { orderID: string }) => {
+    const res = await approvePayPalOrder({
+      orderId,
+      payPalOrderId: data.orderID,
+    });
+
+    toast({
+      variant: res.success ? "default" : "destructive",
+      description: res.message,
+    });
+  };
 
   return (
     <>
@@ -128,6 +176,15 @@ const OrdersDetailTable = (props: OrdersDetailTableProps) => {
                 <div>Total</div>
                 <div>{formatCurrency(total)}</div>
               </div>
+              {!isPaid && paymentInfo === "PayPal" && (
+                <PayPalScriptProvider options={{ clientId: paypalClientId }}>
+                  <PrintLoadingState />
+                  <PayPalButtons
+                    createOrder={handleCreateOrder}
+                    onApprove={handleApprove}
+                  />
+                </PayPalScriptProvider>
+              )}
             </CardContent>
           </Card>
         </div>

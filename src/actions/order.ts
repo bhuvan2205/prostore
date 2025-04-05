@@ -7,6 +7,9 @@ import { getUserById } from "./user";
 import { ROUTES } from "@/constants/routes";
 import { insertOrderSchema } from "@/lib/validator";
 import { prisma } from "@/config/db";
+import { paypal } from "@/lib/paypal";
+import { PaymentResult } from "@/types";
+import { revalidatePath } from "next/cache";
 
 export const createOrder = async () => {
   try {
@@ -87,13 +90,12 @@ export const createOrder = async () => {
       redirectTo: `${ROUTES.ORDER}/${createdOrderId}`,
     };
   } catch (error) {
-    console.error(error);
     return { success: false, message: formatErrors(error) };
   }
 };
 
 export const getOrderById = async (id: string) => {
- const data =  await prisma.order.findFirst({
+  const data = await prisma.order.findFirst({
     where: {
       id,
     },
@@ -104,4 +106,146 @@ export const getOrderById = async (id: string) => {
   });
 
   return convertToPlainObject(data);
+};
+
+export const createPayPalOrder = async (orderId: string) => {
+  try {
+    const order = await prisma.order.findFirst({
+      where: {
+        id: orderId,
+      },
+    });
+
+    if (!order) throw new Error("Order not found");
+
+    const paypalOrder = await paypal.createOrder(Number(order.total));
+
+    await prisma.order.update({
+      where: { id: orderId },
+      data: {
+        paymentResult: {
+          id: paypalOrder.id,
+          pricePaid: 0,
+          status: "",
+          email_address: "",
+        },
+      },
+    });
+
+    return {
+      success: true,
+      message: "Item order created successfully",
+      data: paypalOrder.id,
+    };
+  } catch (error) {
+    return { success: false, message: formatErrors(error) };
+  }
+};
+
+export const approvePayPalOrder = async (payload: {
+  orderId: string;
+  payPalOrderId: string;
+}) => {
+  const { orderId, payPalOrderId } = payload || {};
+
+  try {
+    const order = await prisma.order.findFirst({
+      where: {
+        id: orderId,
+      },
+      include: {
+        orderItems: true,
+      },
+    });
+
+    if (!order) throw new Error("Order not found");
+
+    const capturePayment = await paypal.capturePayment(payPalOrderId);
+
+    if (
+      !capturePayment ||
+      capturePayment.id !== (order.paymentResult as PaymentResult)?.id ||
+      capturePayment.status !== "COMPLETED"
+    ) {
+      throw new Error("Error in Paypal payment");
+    }
+
+    await updateOrderToPaid({
+      orderId,
+      paymentResult: {
+        id: capturePayment.id,
+        status: capturePayment.status,
+        email_address: capturePayment.payer?.email_address,
+        pricePaid: capturePayment.purchase_units
+          ?.at(0)
+          ?.payments?.captures?.at(0)?.amount?.value,
+      },
+    });
+
+    revalidatePath(`/${ROUTES.ORDER}/${orderId}`);
+
+    return {
+      success: true,
+      message: "Your order has been paid",
+    };
+  } catch (error) {
+    return { success: false, message: formatErrors(error) };
+  }
+};
+
+const updateOrderToPaid = async (payload: {
+  orderId: string;
+  paymentResult?: PaymentResult;
+}) => {
+  const { orderId, paymentResult } = payload || {};
+
+  const order = await prisma.order.findFirst({
+    where: {
+      id: orderId,
+    },
+    include: {
+      orderItems: true,
+    },
+  });
+
+  if (!order) throw new Error("Order not found");
+
+  if (order.isPaid) throw new Error("Order is already paid");
+
+  await prisma.$transaction(async (tx) => {
+    for (const item of order.orderItems) {
+      await tx.product.update({
+        where: { id: item.productId },
+        data: {
+          stock: {
+            increment: -item.quantity,
+          },
+        },
+      });
+    }
+
+    await tx.order.update({
+      where: { id: orderId },
+      data: {
+        isPaid: true,
+        paidAt: new Date(),
+        paymentResult,
+      },
+    });
+  });
+
+  const updatedOrder = await prisma.order.findFirst({
+    where: { id: orderId },
+    include: {
+      orderItems: true,
+      user: {
+        select: {
+          name: true,
+          email: true,
+        },
+      },
+    },
+  });
+
+  if (!updatedOrder) throw new Error("Order not found");
 };

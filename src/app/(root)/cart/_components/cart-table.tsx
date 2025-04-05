@@ -20,6 +20,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
+import EmptyCart from "./empty-cart";
 
 type CartTableProps = {
   cart?: Cart;
@@ -35,9 +36,7 @@ const CartTable = (props: CartTableProps) => {
       <h1 className="h2-bold py-4">Shopping Cart</h1>
 
       {!cart || cart.lineItems.length === 0 ? (
-        <div>
-          Cart is empty <Link href={ROUTES.HOME}>Go Shopping</Link>
-        </div>
+        <EmptyCart />
       ) : (
         <div className="grid md:grid-cols-4 md:grid-5">
           <div className="overflow-x-auto md:col-span-3">
@@ -140,7 +139,8 @@ const CartTable = (props: CartTableProps) => {
                   <Loader className="w-4 h-4 animate-spin" />
                 ) : (
                   <ArrowRight className="w-4 h-4" />
-                )} Proceed
+                )}{" "}
+                Proceed
               </Button>
             </CardContent>
           </Card>
