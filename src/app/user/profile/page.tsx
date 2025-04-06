@@ -1,11 +1,22 @@
+import { auth } from "@/config/auth";
 import { Metadata } from "next";
+import { SessionProvider } from "next-auth/react";
+import ProfileForm from "./_components/profile-form";
 
 export const metadata: Metadata = {
   title: "Customer Profile",
 };
 
 const ProfilePage = async () => {
-  return <div>ProfilePage</div>;
+  const session = await auth();
+  return (
+    <SessionProvider session={session}>
+      <div className="max-w-md mx-auto space-y-4">
+        <h2 className="font-bold">Profile</h2>
+        <ProfileForm />
+      </div>
+    </SessionProvider>
+  );
 };
 
 export default ProfilePage;

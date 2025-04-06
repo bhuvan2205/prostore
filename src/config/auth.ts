@@ -71,7 +71,7 @@ export const config = {
       return session;
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    async jwt({ token, user, trigger }: any) {
+    async jwt({ token, user, trigger, session }: any) {
       // Persist the OAuth access_token and or the user id to the token right after signin
       if (user) {
         token.id = user.id;
@@ -113,6 +113,11 @@ export const config = {
             }
           }
         }
+      }
+
+      // Handle Session updates
+      if (session?.user?.name && trigger === TRIGGER_EVENTS.UPDATE) {
+        token.name = session.user.name;
       }
       return token;
     },

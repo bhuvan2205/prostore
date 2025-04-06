@@ -93,10 +93,6 @@ export const updateUserAddress = async (data: unknown) => {
 
     const user = await getUserById(session?.user?.id as string);
 
-    if (!user) {
-      throw new Error("User not found");
-    }
-
     const shippingAddress = shippingAddressSchema.parse(data);
 
     await prisma.user.update({
@@ -107,6 +103,32 @@ export const updateUserAddress = async (data: unknown) => {
     });
 
     return { success: true, message: "Address updated successfully" };
+  } catch (error) {
+    return { success: false, message: formatErrors(error) };
+  }
+};
+
+export const updateProfile = async (payload: {
+  name: string;
+  email: string;
+}) => {
+  const { name, email } = payload || {};
+  try {
+    const session = await auth();
+
+    if (!session) {
+      throw new Error("No Session");
+    }
+
+    const user = await getUserById(session?.user?.id as string);
+
+    const data = !!email ? { name, email } : { name };
+    await prisma.user.update({
+      where: { id: user?.id },
+      data,
+    });
+
+    return { success: true, message: "User updated successfully" };
   } catch (error) {
     return { success: false, message: formatErrors(error) };
   }
