@@ -13,13 +13,22 @@ import { Metadata } from "next";
 import EmptyOrders from "./_components/empty-orders";
 import Link from "next/link";
 import { ROUTES } from "@/constants/routes";
+import Pagination from "@/components/shared/pagination";
 
 export const metadata: Metadata = {
   title: "Customer Orders",
 };
 
-const OrdersPage = async () => {
-  const orders = await getMyOrders({ limit: PAGE_SIZE, page: 1 });
+type OrdersPageProps = {
+  searchParams: Promise<{ page: string }>;
+};
+
+const OrdersPage = async (props: OrdersPageProps) => {
+  const { page } = await props.searchParams;
+  const orders = await getMyOrders({
+    limit: PAGE_SIZE,
+    page: Number(page) || 1,
+  });
   return (
     <div className="space-y-2">
       <h2 className="h2-bold">Orders</h2>
@@ -63,6 +72,10 @@ const OrdersPage = async () => {
               ))}
             </TableBody>
           </Table>
+          <Pagination
+            page={Number(page) || 1}
+            totalPages={orders?.totalPages}
+          />
         </div>
       ) : (
         <EmptyOrders />

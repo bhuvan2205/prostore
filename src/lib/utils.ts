@@ -1,4 +1,5 @@
 import { clsx, type ClassValue } from "clsx";
+import queryString from "query-string";
 import { twMerge } from "tailwind-merge";
 
 export const cn = (...inputs: ClassValue[]) => {
@@ -110,4 +111,19 @@ export const formatDateTime = (dateString: Date) => {
     dateOnly: formattedDate,
     timeOnly: formattedTime,
   };
+};
+
+export const urlQuery = (payload: {
+  params: string;
+  key: string;
+  value: string | null;
+}) => {
+  const { params, key, value } = payload || {};
+  const query = queryString.parse(params);
+  query[key] = value;
+
+  return queryString.stringifyUrl(
+    { url: window.location.pathname, query },
+    { skipNull: true }
+  );
 };
