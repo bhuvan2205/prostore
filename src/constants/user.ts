@@ -28,3 +28,22 @@ export const USER_NAVLINKS = [
     href: ROUTES.LIST_ORDER,
   },
 ];
+
+export const ADMIN_NAVLINKS = [
+  {
+    title: "Overview",
+    href: ROUTES.ADMIN_OVERVIEW,
+  },
+  {
+    title: "Products",
+    href: ROUTES.ADMIN_PRODUCTS,
+  },
+  {
+    title: "Orders",
+    href: ROUTES.ADMIN_ORDERS,
+  },
+  {
+    title: "Users",
+    href: ROUTES.ADMIN_USERS,
+  },
+];

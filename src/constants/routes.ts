@@ -10,4 +10,8 @@ export const ROUTES = {
   PLACE_ORDER: "/place-order",
   PROFILE: "/user/profile",
   LIST_ORDER: "/user/orders",
+  ADMIN_OVERVIEW: "/admin/overview",
+  ADMIN_PRODUCTS: "/admin/products",
+  ADMIN_USERS: "/admin/users",
+  ADMIN_ORDERS: "/admin/orders",
 };
