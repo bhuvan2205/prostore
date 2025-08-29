@@ -107,7 +107,7 @@ export const config = {
 
               // Assign new cart to the user
               await prisma.cart.update({
-                where: { id: sessionCartId },
+                where: { id: sessionCart.id },
                 data: { userId: user.id },
               });
             }

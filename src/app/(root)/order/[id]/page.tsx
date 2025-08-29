@@ -19,7 +19,10 @@ const OrderDetailsPage = async (props: OrderDetailsPageProps) => {
   return (
     <div>
       <OrdersDetailTable
-        order={{...order, shippingAddress: order.shippingAddress as ShippingAddress}}
+        order={{
+          ...order,
+          shippingAddress: order.shippingAddress as ShippingAddress,
+        }}
         paypalClientId={getEnv("PAYPAL_CLIENT_ID")}
       />
     </div>

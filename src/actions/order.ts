@@ -60,10 +60,26 @@ export const createOrder = async () => {
       });
 
       for (const lineItem of cart.lineItems) {
+        const product = await tx.product.findFirst({
+          where: { id: lineItem.productId },
+        });
+
+        if (!product) {
+          throw new Error(
+            `Product not found for item ${lineItem.name}. Please remove it from your cart.`
+          );
+        }
+
+        if (product.stock < lineItem.quantity) {
+          throw new Error(
+            `Not enough stock for ${product.name}. Available: ${product.stock}`
+          );
+        }
+
         await tx.orderItem.create({
           data: {
-            ...lineItem,
             orderId: createdOrder.id,
+            ...lineItem,
           },
         });
       }

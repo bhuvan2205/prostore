@@ -26,7 +26,7 @@ model Product {
   isFeatured  Boolean     @default(false)
   banner      String?
   createdAt   DateTime    @default(now()) @db.Timestamp(6)
-  orderItems   OrderItem[]
+  orderItems  OrderItem[]
 }
 
 model User {
@@ -113,7 +113,7 @@ model Order {
   createdAt       DateTime    @default(now()) @db.Timestamp(6)
   updatedAt       DateTime    @updatedAt
   user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  orderItems       OrderItem[]
+  orderItems      OrderItem[]
 }
 
 model OrderItem {
@@ -127,5 +127,5 @@ model OrderItem {
   order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
-  @@id([orderId, productId])
+  @@id([orderId, productId], map: "orderitems_orderId_productId_pk")
 }
