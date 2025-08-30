@@ -36,3 +36,4 @@ export type Order = z.infer<typeof insertOrderSchema> & {
     email: string | null;
   };
 };
+export type SalesData = { month: string; totalSales: number }

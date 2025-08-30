@@ -66,8 +66,13 @@ export const formatCurrency = (value: number | string | null) => {
   } else if (typeof value === "string") {
     return CURRENCY_FORMATTER.format(Number(value));
   }
-
   return "NaN";
+};
+
+const NUMBER_FORMATTER = new Intl.NumberFormat("en-US");
+
+export const formatNumber = (number: number) => {
+  return NUMBER_FORMATTER.format(number);
 };
 
 export const formatId = (id: string) => {
