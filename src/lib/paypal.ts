@@ -11,6 +11,24 @@ const handleApiResponse = async (response: Response) => {
   }
 };
 
+export const generateAccessToken = async () => {
+  const auth = Buffer.from(`${payPalClientId}:${payPalSecretKey}`).toString(
+    "base64"
+  );
+
+  const response = await fetch(`${payPalUrl}/v1/oauth2/token`, {
+    method: "POST",
+    body: "grant_type=client_credentials",
+    headers: {
+      Authorization: `Basic ${auth}`,
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+  });
+
+  const jsonData = await handleApiResponse(response);
+  return jsonData.access_token;
+};
+
 export const paypal = {
   createOrder: async function createOrder(price: number) {
     const accessToken = await generateAccessToken();
@@ -51,22 +69,4 @@ export const paypal = {
 
     return handleApiResponse(response);
   },
-};
-
-export const generateAccessToken = async () => {
-  const auth = Buffer.from(`${payPalClientId}:${payPalSecretKey}`).toString(
-    "base64"
-  );
-
-  const response = await fetch(`${payPalUrl}/v1/oauth2/token`, {
-    method: "POST",
-    body: "grant_type=client_credentials",
-    headers: {
-      Authorization: `Basic ${auth}`,
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-  });
-
-  const jsonData = await handleApiResponse(response);
-  return jsonData.access_token;
 };
