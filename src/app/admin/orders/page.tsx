@@ -28,7 +28,6 @@ const AdminOrdersPage = async (props: AdminOrdersPageProps) => {
   const { page = "1" } = await props.searchParams;
 
   const { orders, totalPages } = await getAllOrders({
-    limit: 2,
     page: Number(page),
   });
   return (

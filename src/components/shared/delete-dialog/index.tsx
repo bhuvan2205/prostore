@@ -63,7 +63,7 @@ const DeleteDialog = ({ id, action }: DeleteDialogProps) => {
             disabled={isPending}
             onClick={handleDelete}
           >
-            {isPending ? "..." : "Delete"}
+            {isPending ? "Deleting..." : "Delete"}
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>

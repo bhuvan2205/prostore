@@ -6,6 +6,7 @@ import { PAGE_SIZE } from "@/constants/user";
 import { formatErrors } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
 import { updateOrderToPaid } from "./order";
+import { Prisma } from "@prisma/client";
 
 export const getAllOrders = async ({ limit = PAGE_SIZE, page = 1 }) => {
   const orders = await prisma.order.findMany({
@@ -23,9 +24,14 @@ export const getAllOrders = async ({ limit = PAGE_SIZE, page = 1 }) => {
   };
 };
 
-export const deleteOrder = async (id: string) => {
+export const deleteOrder = async (orderId: string) => {
   try {
-    await prisma.order.delete({ where: { id } });
+    const existingOrder = await prisma.order.findFirst({
+      where: { id: orderId },
+    });
+    if (!existingOrder) throw new Error("Order not found");
+
+    await prisma.order.delete({ where: { id: orderId } });
 
     revalidatePath(ROUTES.ADMIN_ORDERS);
 
@@ -62,6 +68,59 @@ export const deliverOrder = async (orderId: string) => {
 
     revalidatePath(`/order/${orderId}`);
     return { success: true, message: "Order delivered Successfully" };
+  } catch (error) {
+    return { success: false, message: formatErrors(error) };
+  }
+};
+
+export const getAllProducts = async ({
+  limit = PAGE_SIZE,
+  page = 1,
+  category,
+  query,
+}: {
+  limit?: number;
+  page?: number;
+  query?: string;
+  category?: string;
+}) => {
+  const whereClause: Prisma.ProductWhereInput = {};
+
+  if (query) {
+    whereClause.OR = [
+      { name: { contains: query, mode: "insensitive" } },
+      { description: { contains: query, mode: "insensitive" } },
+    ];
+  }
+
+  if (category) {
+    whereClause.category = category;
+  }
+
+  const products = await prisma.product.findMany({
+    take: limit,
+    skip: (page - 1) * limit,
+  });
+
+  const productsCount = await prisma.product.count();
+
+  return {
+    products,
+    totalPages: Math.ceil(productsCount / limit),
+  };
+};
+
+export const deleteProduct = async (productId: string) => {
+  try {
+    const existingProduct = await prisma.product.findFirst({
+      where: { id: productId },
+    });
+    if (!existingProduct) throw new Error("Product not found");
+
+    await prisma.product.delete({ where: { id: productId } });
+
+    revalidatePath(`/admin/products`);
+    return { success: true, message: "Product deleted successfully" };
   } catch (error) {
     return { success: false, message: formatErrors(error) };
   }
