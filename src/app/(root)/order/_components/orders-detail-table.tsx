@@ -21,14 +21,17 @@ import {
 } from "@paypal/react-paypal-js";
 import { useToast } from "@/hooks/use-toast";
 import { approvePayPalOrder, createPayPalOrder } from "@/actions/order";
+import MarkAsPaidButton from "./mark-as-paid-btn";
+import MarkAsDeliveredButton from "./mark-as-delivered-btn";
 
 type OrdersDetailTableProps = {
   order: Order;
   paypalClientId: string;
+  isAdmin: boolean;
 };
 
 const OrdersDetailTable = (props: OrdersDetailTableProps) => {
-  const { order, paypalClientId } = props || {};
+  const { order, paypalClientId, isAdmin = false } = props || {};
   const {
     orderItems,
     shippingAddress,
@@ -186,6 +189,12 @@ const OrdersDetailTable = (props: OrdersDetailTableProps) => {
                     />
                   </PayPalScriptProvider>
                 </div>
+              )}
+              {isAdmin && !isPaid && paymentInfo === "CashOnDelivery" && (
+                <MarkAsPaidButton orderId={orderId} />
+              )}
+              {isAdmin && isPaid && !isDelivered && (
+                <MarkAsDeliveredButton orderId={orderId} />
               )}
             </CardContent>
           </Card>

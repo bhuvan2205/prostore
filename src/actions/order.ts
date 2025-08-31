@@ -210,7 +210,7 @@ export const approvePayPalOrder = async (payload: {
   }
 };
 
-const updateOrderToPaid = async (payload: {
+export const updateOrderToPaid = async (payload: {
   orderId: string;
   paymentResult?: PaymentResult;
 }) => {
