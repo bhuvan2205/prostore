@@ -7,6 +7,8 @@ import { formatErrors } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
 import { updateOrderToPaid } from "./order";
 import { Prisma } from "@prisma/client";
+import { insertProductSchema, updateProductSchema } from "@/lib/validator";
+import { z } from "zod";
 
 export const getAllOrders = async ({ limit = PAGE_SIZE, page = 1 }) => {
   const orders = await prisma.order.findMany({
@@ -121,6 +123,39 @@ export const deleteProduct = async (productId: string) => {
 
     revalidatePath(`/admin/products`);
     return { success: true, message: "Product deleted successfully" };
+  } catch (error) {
+    return { success: false, message: formatErrors(error) };
+  }
+};
+
+export const createProduct = async (
+  data: z.infer<typeof insertProductSchema>
+) => {
+  try {
+    const product = insertProductSchema.parse(data);
+    await prisma.product.create({ data: product });
+
+    revalidatePath(ROUTES.ADMIN_PRODUCTS);
+    return { success: true, message: "Product created successfully" };
+  } catch (error) {
+    return { success: false, message: formatErrors(error) };
+  }
+};
+
+export const updateProduct = async (
+  data: z.infer<typeof updateProductSchema>
+) => {
+  try {
+    const product = updateProductSchema.parse(data);
+    const existingProduct = await prisma.product.findFirst({
+      where: { id: product.id },
+    });
+    if (!existingProduct) throw new Error("Product not found");
+
+    await prisma.product.update({ where: { id: product.id }, data: product });
+
+    revalidatePath(ROUTES.ADMIN_PRODUCTS);
+    return { success: true, message: "Product updated successfully" };
   } catch (error) {
     return { success: false, message: formatErrors(error) };
   }

@@ -11,8 +11,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { formatCurrency, formatId } from "@/lib/utils";
+import { Metadata } from "next";
 import Link from "next/link";
-import React from "react";
+
+export const metadata: Metadata = {
+  title: "Admin Products",
+};
 
 type AdminProductPageProps = {
   searchParams: Promise<{ page: string; query: string; category: string }>;
