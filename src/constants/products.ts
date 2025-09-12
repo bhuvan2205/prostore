@@ -1,3 +1,5 @@
+import { getRandomBannerImage, getRandomImageArray } from "@/lib/products";
+
 export const LATEST_PRODUCTS_LIMIT = 4;
 export const TAX_PERCENTAGE = 0.15;
 export const SHIPPING_COST = 50;
@@ -7,7 +9,7 @@ export const CREATE_PRODUCT_DEFAULT_VALUES = {
   name: "",
   slug: "",
   category: "",
-  images: [],
+  images: getRandomImageArray(),
   brand: "",
   description: "",
   price: "0",
@@ -15,5 +17,5 @@ export const CREATE_PRODUCT_DEFAULT_VALUES = {
   rating: "0",
   numReviews: "0",
   isFeatured: false,
-  banner: null,
+  banner: getRandomBannerImage(),
 };

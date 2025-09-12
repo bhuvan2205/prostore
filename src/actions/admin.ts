@@ -86,22 +86,12 @@ export const getAllProducts = async ({
   query?: string;
   category?: string;
 }) => {
-  const whereClause: Prisma.ProductWhereInput = {};
-
-  if (query) {
-    whereClause.OR = [
-      { name: { contains: query, mode: "insensitive" } },
-      { description: { contains: query, mode: "insensitive" } },
-    ];
-  }
-
-  if (category) {
-    whereClause.category = category;
-  }
+  
 
   const products = await prisma.product.findMany({
     take: limit,
     skip: (page - 1) * limit,
+    orderBy: { createdAt: "desc" },
   });
 
   const productsCount = await prisma.product.count();

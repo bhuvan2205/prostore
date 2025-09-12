@@ -121,4 +121,18 @@ const sampleData = {
   ],
 };
 
+export const MAP_IMAGE = {
+  "0": ["/images/sample-products/p1-1.jpg", "/images/sample-products/p1-2.jpg"],
+  "1": ["/images/sample-products/p2-1.jpg", "/images/sample-products/p2-2.jpg"],
+  "2": ["/images/sample-products/p3-1.jpg", "/images/sample-products/p3-2.jpg"],
+  "3": ["/images/sample-products/p4-1.jpg", "/images/sample-products/p4-2.jpg"],
+  "4": ["/images/sample-products/p5-1.jpg", "/images/sample-products/p5-2.jpg"],
+  "5": ["/images/sample-products/p6-1.jpg", "/images/sample-products/p6-2.jpg"],
+};
+
+export const MAP_BANNER_IMAGE = {
+  "0": "/images/banner-1.jpg",
+  "1": "/images/banner-2.jpg",
+};
+
 export default sampleData;
