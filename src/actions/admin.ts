@@ -6,7 +6,6 @@ import { PAGE_SIZE } from "@/constants/user";
 import { formatErrors } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
 import { updateOrderToPaid } from "./order";
-import { Prisma } from "@prisma/client";
 import { insertProductSchema, updateProductSchema } from "@/lib/validator";
 import { z } from "zod";
 

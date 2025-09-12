@@ -26,6 +26,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { UploadButton } from "@/lib/upload-thing";
 import Image from "next/image";
 import { Checkbox } from "@/components/ui/checkbox";
+import { getRandomBannerImage } from "@/lib/products";
 
 type ProductFormProps = {
   type: "Create" | "Update";
@@ -49,8 +50,8 @@ const ProductForm = ({ type, product, productId }: ProductFormProps) => {
       const res = await createProduct(formData);
       if (!res.success) {
         toast({
-          description: res.message,
           variant: "destructive",
+          description: res.message,
         });
         return;
       }
@@ -58,11 +59,15 @@ const ProductForm = ({ type, product, productId }: ProductFormProps) => {
         description: res.message,
       });
     } else {
-      const res = await updateProduct({ ...formData, id: productId as string });
+      const res = await updateProduct({
+        ...formData,
+        banner: formData?.isFeatured ? getRandomBannerImage() : null,
+        id: productId as string,
+      });
       if (!res.success) {
         toast({
-          description: res.message,
           variant: "destructive",
+          description: res.message,
         });
         return;
       }

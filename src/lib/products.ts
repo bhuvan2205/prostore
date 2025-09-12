@@ -9,5 +9,6 @@ export const getRandomImageArray = () => {
 export const getRandomBannerImage = () => {
   const keys = Object.keys(MAP_BANNER_IMAGE);
   const randomKey = keys[Math.floor(Math.random() * keys.length)];
+  console.log(MAP_BANNER_IMAGE[randomKey as keyof typeof MAP_BANNER_IMAGE])
   return MAP_BANNER_IMAGE[randomKey as keyof typeof MAP_BANNER_IMAGE];
 };

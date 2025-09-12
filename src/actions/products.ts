@@ -19,3 +19,13 @@ export const getSingleProductBySlug = async (slug: string) => {
     },
   });
 };
+
+export const getSingleProductById = async (productId: string) => {
+  const data = await prisma.product.findFirst({
+    where: {
+      id: productId,
+    },
+  });
+
+  return convertToPlainObject(data);
+};
