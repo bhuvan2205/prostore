@@ -10,6 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { ROUTES } from "@/constants/routes";
 import { formatCurrency, formatId } from "@/lib/utils";
 import { Metadata } from "next";
 import Link from "next/link";
@@ -66,7 +67,7 @@ const AdminProductPage = async (props: AdminProductPageProps) => {
               <TableCell>{product?.rating}</TableCell>
               <TableCell className="flex gap-1">
                 <Button asChild variant="outline">
-                  <Link href={`/admin/products/${product?.id}`}>Edit</Link>
+                  <Link href={`${ROUTES.ADMIN_PRODUCTS}/${product?.id}`}>Edit</Link>
                 </Button>
                 <DeleteDialog id={product?.id} action={deleteProduct} />
               </TableCell>

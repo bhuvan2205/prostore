@@ -47,3 +47,8 @@ export const ADMIN_NAVLINKS = [
     href: ROUTES.ADMIN_USERS,
   },
 ];
+
+export const USER_ROLES = {
+  ADMIN: "admin",
+  USER: "user",
+};

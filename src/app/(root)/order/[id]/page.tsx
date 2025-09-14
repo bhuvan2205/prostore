@@ -4,6 +4,7 @@ import { ShippingAddress } from "@/types";
 import { notFound } from "next/navigation";
 import OrdersDetailTable from "../_components/orders-detail-table";
 import { auth } from "@/config/auth";
+import { USER_ROLES } from "@/constants/user";
 
 type OrderDetailsPageProps = {
   params: Promise<{
@@ -25,7 +26,7 @@ const OrderDetailsPage = async (props: OrderDetailsPageProps) => {
           shippingAddress: order.shippingAddress as ShippingAddress,
         }}
         paypalClientId={getEnv("PAYPAL_CLIENT_ID")}
-        isAdmin={session?.user?.role === "admin"}
+        isAdmin={session?.user?.role === USER_ROLES.ADMIN}
       />
     </div>
   );

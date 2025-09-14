@@ -8,6 +8,7 @@ import { revalidatePath } from "next/cache";
 import { updateOrderToPaid } from "./order";
 import { insertProductSchema, updateProductSchema } from "@/lib/validator";
 import { z } from "zod";
+import { UpdateUser } from "@/types";
 
 export const getAllOrders = async ({ limit = PAGE_SIZE, page = 1 }) => {
   const orders = await prisma.order.findMany({
@@ -36,7 +37,7 @@ export const deleteOrder = async (orderId: string) => {
 
     revalidatePath(ROUTES.ADMIN_ORDERS);
 
-    return { success: false, message: "Order deleted Successfully" };
+    return { success: true, message: "Order deleted Successfully" };
   } catch (error) {
     return { success: false, message: formatErrors(error) };
   }
@@ -85,8 +86,6 @@ export const getAllProducts = async ({
   query?: string;
   category?: string;
 }) => {
-  
-
   const products = await prisma.product.findMany({
     take: limit,
     skip: (page - 1) * limit,
@@ -149,3 +148,59 @@ export const updateProduct = async (
     return { success: false, message: formatErrors(error) };
   }
 };
+
+export const getAllUsers = async ({
+  limit = PAGE_SIZE,
+  page = 1,
+}: {
+  limit?: number;
+  page: number;
+}) => {
+  const users = await prisma.user.findMany({
+    skip: (page - 1) * limit,
+    take: limit,
+    orderBy: { createdAt: "desc" },
+  });
+
+  const userCount = await prisma.user.count();
+
+  return { userCount, users, totalPages: Math.ceil(userCount / limit) };
+};
+
+export const deleteUser = async (userId: string) => {
+  try {
+    const existingUser = await prisma.user.findFirst({
+      where: { id: userId },
+    });
+    if (!existingUser) throw new Error("User not found");
+
+    await prisma.user.delete({ where: { id: userId } });
+
+    revalidatePath(ROUTES.ADMIN_USERS);
+
+    return { success: true, message: "User deleted Successfully" };
+  } catch (error) {
+    return { success: false, message: formatErrors(error) };
+  }
+};
+
+export async function updateUser(user: UpdateUser) {
+  try {
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        name: user.name,
+        role: user.role,
+      },
+    });
+
+    revalidatePath(ROUTES.ADMIN_USERS);
+
+    return {
+      success: true,
+      message: "User updated successfully",
+    };
+  } catch (error) {
+    return { success: false, message: formatErrors(error) };
+  }
+}

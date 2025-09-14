@@ -15,7 +15,7 @@ const ProductDetailPage = async (props: ProductDetailPage) => {
   const { slug } = await props.params;
   const product = await getSingleProductBySlug(slug);
 
-  if (!product) return notFound();
+  if (!product) notFound();
 
   const cart = await getMyCart();
 

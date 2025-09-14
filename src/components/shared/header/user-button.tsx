@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { auth } from "@/config/auth";
 import { ROUTES } from "@/constants/routes";
+import { USER_ROLES } from "@/constants/user";
 import { User } from "lucide-react";
 import Link from "next/link";
 
@@ -63,7 +64,7 @@ const UserButton = async () => {
               My Orders
             </Link>
           </DropdownMenuItem>
-          {session?.user?.role === "admin" && (
+          {session?.user?.role === USER_ROLES.ADMIN && (
             <DropdownMenuItem>
               <Link href={ROUTES.ADMIN_OVERVIEW} className="w-full">
                 Admin

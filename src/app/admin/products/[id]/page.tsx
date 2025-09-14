@@ -16,7 +16,7 @@ type AdminProductUpdatePageProps = {
 const AdminProductUpdatePage = async (props: AdminProductUpdatePageProps) => {
   const { id } = (await props?.params) || {};
   const product = await getSingleProductById(id);
-  if (!product) return notFound();
+  if (!product) notFound();
 
   return (
     <div className="space-y-8 max-w-5xl mx-auto">

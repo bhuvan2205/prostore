@@ -7,6 +7,7 @@ import {
   insertOrderItemSchema,
   insertOrderSchema,
   paymentResultSchema,
+  updateUserSchema,
 } from "@/lib/validator";
 import { z } from "zod";
 
@@ -36,4 +37,5 @@ export type Order = z.infer<typeof insertOrderSchema> & {
     email: string | null;
   };
 };
-export type SalesData = { month: string; totalSales: number }
+export type SalesData = { month: string; totalSales: number };
+export type UpdateUser = z.infer<typeof updateUserSchema>;
