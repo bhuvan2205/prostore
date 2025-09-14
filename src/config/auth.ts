@@ -29,19 +29,16 @@ export const config = {
         if (!credentials) {
           return null;
         }
-
         const user = await prisma.user.findUnique({
           where: {
             email: credentials.email as string,
           },
         });
-
         if (user && user.password) {
           const isValidPassword = await compare(
             credentials.password as string,
             user.password
           );
-
           if (isValidPassword) {
             return {
               id: user.id,
@@ -51,7 +48,6 @@ export const config = {
             };
           }
         }
-
         return null;
       },
     }),
@@ -62,11 +58,9 @@ export const config = {
       session.user.id = token.sub;
       session.user.role = token.role;
       session.user.name = token.name;
-
       if (trigger === "update") {
         session.user.name = user.name;
       }
-
       return session;
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -76,7 +70,6 @@ export const config = {
         token.role = user.role;
         if (user.name === "NO_NAME") {
           token.name = user?.email.split("@")?.at(0);
-
           await prisma.user.update({
             where: {
               id: user.id,
@@ -86,22 +79,18 @@ export const config = {
             },
           });
         }
-
         if (
           trigger === TRIGGER_EVENTS.SIGN_IN ||
           trigger === TRIGGER_EVENTS.SIGN_UP
         ) {
           const cookiesObject = await cookies();
           const sessionCartId = cookiesObject.get(SESSION_CART_ID)?.value;
-
           if (sessionCartId) {
             const sessionCart = await prisma.cart.findFirst({
               where: { sessionCartId },
             });
-
             if (sessionCart) {
               await prisma.cart.deleteMany({ where: { userId: user.id } });
-
               await prisma.cart.update({
                 where: { id: sessionCart.id },
                 data: { userId: user.id },
@@ -110,7 +99,6 @@ export const config = {
           }
         }
       }
-
       if (session?.user?.name && trigger === TRIGGER_EVENTS.UPDATE) {
         token.name = session.user.name;
       }
@@ -119,21 +107,17 @@ export const config = {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     authorized({ request, auth }: any) {
       const { pathname } = request.nextUrl;
-
       if (!auth && PROTECTED_ROUTES.some((route) => route.test(pathname))) {
         return false;
       }
-
       if (!request.cookies.get(SESSION_CART_ID)) {
         const sessionCartId = crypto.randomUUID();
         const newRequestHeaders = new Headers(request.headers);
-
         const response = NextResponse.next({
           request: {
             headers: newRequestHeaders,
           },
         });
-
         response.cookies.set(SESSION_CART_ID, sessionCartId);
         return response;
       } else {
