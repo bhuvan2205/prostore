@@ -1,6 +1,6 @@
 "use client";
 
-import { ADMIN_NAVLINKS, USER_NAVLINKS } from "@/constants/user";
+import { ADMIN_NAVLINKS } from "@/constants/user";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
