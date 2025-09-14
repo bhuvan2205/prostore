@@ -11,12 +11,36 @@ import { z } from "zod";
 import { UpdateUser } from "@/types";
 import { Prisma } from "@prisma/client";
 
-export const getAllOrders = async ({ limit = PAGE_SIZE, page = 1 }) => {
+export const getAllOrders = async ({
+  limit = PAGE_SIZE,
+  page = 1,
+  query,
+}: {
+  limit?: number;
+  page?: number;
+  query: string;
+}) => {
+  // Query Filter
+  const queryFilter: Prisma.OrderWhereInput =
+    query && query !== "all"
+      ? {
+          user: {
+            name: {
+              contains: query,
+              mode: "insensitive",
+            },
+          },
+        }
+      : {};
+
   const orders = await prisma.order.findMany({
     take: limit,
     skip: (page - 1) * limit,
     orderBy: { createdAt: "desc" },
     include: { user: { select: { name: true } } },
+    where: {
+      ...queryFilter,
+    },
   });
 
   const ordersCount = await prisma.order.count();
@@ -48,7 +72,7 @@ export const updateOrderToPaidCOD = async (orderId: string) => {
   try {
     await updateOrderToPaid({ orderId });
 
-    revalidatePath(`/order/${orderId}`);
+    revalidatePath(`/${ROUTES.ORDER}/${orderId}`);
     return { success: true, message: "Order paid Successfully" };
   } catch (error) {
     return { success: false, message: formatErrors(error) };
@@ -69,7 +93,7 @@ export const deliverOrder = async (orderId: string) => {
       },
     });
 
-    revalidatePath(`/order/${orderId}`);
+    revalidatePath(`/${ROUTES.ORDER}/${orderId}`);
     return { success: true, message: "Order delivered Successfully" };
   } catch (error) {
     return { success: false, message: formatErrors(error) };
@@ -128,7 +152,7 @@ export const deleteProduct = async (productId: string) => {
 
     await prisma.product.delete({ where: { id: productId } });
 
-    revalidatePath(`/admin/products`);
+    revalidatePath(ROUTES.ADMIN_PRODUCTS);
     return { success: true, message: "Product deleted successfully" };
   } catch (error) {
     return { success: false, message: formatErrors(error) };
@@ -171,14 +195,28 @@ export const updateProduct = async (
 export const getAllUsers = async ({
   limit = PAGE_SIZE,
   page = 1,
+  query,
 }: {
   limit?: number;
   page: number;
+  query: string;
 }) => {
+  // Query Filter
+  const queryFilter: Prisma.UserWhereInput =
+    query && query !== "all"
+      ? {
+          name: {
+            contains: query,
+            mode: "insensitive",
+          } as Prisma.StringFilter,
+        }
+      : {};
+
   const users = await prisma.user.findMany({
     skip: (page - 1) * limit,
     take: limit,
     orderBy: { createdAt: "desc" },
+    where: { ...queryFilter },
   });
 
   const userCount = await prisma.user.count();

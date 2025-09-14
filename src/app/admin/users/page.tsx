@@ -23,20 +23,34 @@ export const metadata: Metadata = {
 };
 
 type AdminUsersPageProps = {
-  searchParams: Promise<{ page: string }>;
+  searchParams: Promise<{ page: string; query: string }>;
 };
 
 const AdminUsersPage = async (props: AdminUsersPageProps) => {
-  const { page = "1" } = await props?.searchParams;
+  const { page = "1", query } = await props?.searchParams;
 
   const { users, totalPages } = await getAllUsers({
     page: Number(page),
+    query
   });
 
-    return (
+  return (
     <>
       <div className="space-y-2">
-        <h2 className="h2-bold">Users</h2>
+      <div className="flex items-center gap-3">
+          <h1 className="h2-bold">Users</h1>
+          {query && (
+            <div>
+              Filtered by <i>&quot;{query}&quot;</i>
+              {"  "}
+              <Link href={ROUTES.ADMIN_USERS}>
+                <Button variant="outline" size="sm">
+                  Remove filter
+                </Button>
+              </Link>
+            </div>
+          )}
+        </div>
         {users?.length > 0 && (
           <div className="overflow-x-auto">
             <Table>
@@ -64,7 +78,9 @@ const AdminUsersPage = async (props: AdminUsersPageProps) => {
                     </TableCell>
                     <TableCell>
                       <Button asChild variant="outline" size="sm">
-                        <Link href={`${ROUTES.ADMIN_USERS}/${user.id}`}>Edit</Link>
+                        <Link href={`${ROUTES.ADMIN_USERS}/${user.id}`}>
+                          Edit
+                        </Link>
                       </Button>
                       <DeleteDialog id={user.id} action={deleteUser} />
                     </TableCell>

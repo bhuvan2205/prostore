@@ -3,6 +3,7 @@
 import { auth } from "@/config/auth";
 import { prisma } from "@/config/db";
 import { SESSION_CART_ID } from "@/constants/cart";
+import { ROUTES } from "@/constants/routes";
 import { calcPrice } from "@/lib/cart";
 import { convertToPlainObject, formatErrors } from "@/lib/utils";
 import { insertCartSchema, lineItemSchema } from "@/lib/validator";
@@ -48,7 +49,6 @@ export const addItemToCart = async (data: LineItem) => {
         data: newCart,
       });
     } else {
-
       const existingLineItem = cart.lineItems.find(
         (item) => item.productId === lineItem.productId
       );
@@ -77,7 +77,7 @@ export const addItemToCart = async (data: LineItem) => {
       });
     }
 
-    revalidatePath(`/product/${product.slug}`);
+    revalidatePath(`/${ROUTES.PRODUCT}/${product.slug}`);
 
     return { success: true, message: `${product.name} added to cart` };
   } catch (error) {
@@ -128,10 +128,9 @@ export const removeItemFromCart = async (productId: string) => {
       },
     });
 
-    revalidatePath(`/product/${product.slug}`);
+    revalidatePath(`/${ROUTES.PRODUCT}/${product.slug}`);
 
     return { success: true, message: `${product.name} removed from the cart` };
-
   } catch (error) {
     return { success: false, message: formatErrors(error) };
   }
