@@ -16,7 +16,7 @@ export const config = {
   },
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 days
+    maxAge: 30 * 24 * 60 * 60,
   },
   adapter: PrismaAdapter(prisma),
   providers: [
@@ -59,7 +59,6 @@ export const config = {
   callbacks: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async session({ session, token, trigger, user }: any) {
-      // Set the user ID, role & name from the token to the session
       session.user.id = token.sub;
       session.user.role = token.role;
       session.user.name = token.name;
@@ -72,7 +71,6 @@ export const config = {
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async jwt({ token, user, trigger, session }: any) {
-      // Persist the OAuth access_token and or the user id to the token right after signin
       if (user) {
         token.id = user.id;
         token.role = user.role;
@@ -102,10 +100,8 @@ export const config = {
             });
 
             if (sessionCart) {
-              // Delete current cart
               await prisma.cart.deleteMany({ where: { userId: user.id } });
 
-              // Assign new cart to the user
               await prisma.cart.update({
                 where: { id: sessionCart.id },
                 data: { userId: user.id },
@@ -115,7 +111,6 @@ export const config = {
         }
       }
 
-      // Handle Session updates
       if (session?.user?.name && trigger === TRIGGER_EVENTS.UPDATE) {
         token.name = session.user.name;
       }
@@ -123,31 +118,23 @@ export const config = {
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     authorized({ request, auth }: any) {
-      // Get the pathname from the request
       const { pathname } = request.nextUrl;
 
-      // If the user is authenticated and the route is protected, return true
       if (!auth && PROTECTED_ROUTES.some((route) => route.test(pathname))) {
         return false;
       }
 
       if (!request.cookies.get(SESSION_CART_ID)) {
-        // Generate new session cart id cookie
         const sessionCartId = crypto.randomUUID();
-
-        // Clone the req headers
         const newRequestHeaders = new Headers(request.headers);
 
-        // Create new response and add the new headers
         const response = NextResponse.next({
           request: {
             headers: newRequestHeaders,
           },
         });
 
-        // Set newly generated sessionCartId in the response cookies
         response.cookies.set(SESSION_CART_ID, sessionCartId);
-
         return response;
       } else {
         return true;
