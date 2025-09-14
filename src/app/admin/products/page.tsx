@@ -36,7 +36,20 @@ const AdminProductPage = async (props: AdminProductPageProps) => {
   return (
     <div className="space-y-2">
       <div className="flex-between">
-        <h1 className="h2-bold">Products</h1>
+        <div className="flex items-center gap-3">
+          <h1 className="h2-bold">Products</h1>
+          {query && (
+            <div>
+              Filtered by <i>&quot;{query}&quot;</i>
+              {"  "}
+              <Link href={ROUTES.ADMIN_PRODUCTS}>
+                <Button variant="outline" size="sm">
+                  Remove filter
+                </Button>
+              </Link>
+            </div>
+          )}
+        </div>
         <Button asChild>
           <Link href="/admin/products/create">Create Product</Link>
         </Button>
@@ -67,7 +80,9 @@ const AdminProductPage = async (props: AdminProductPageProps) => {
               <TableCell>{product?.rating}</TableCell>
               <TableCell className="flex gap-1">
                 <Button asChild variant="outline">
-                  <Link href={`${ROUTES.ADMIN_PRODUCTS}/${product?.id}`}>Edit</Link>
+                  <Link href={`${ROUTES.ADMIN_PRODUCTS}/${product?.id}`}>
+                    Edit
+                  </Link>
                 </Button>
                 <DeleteDialog id={product?.id} action={deleteProduct} />
               </TableCell>

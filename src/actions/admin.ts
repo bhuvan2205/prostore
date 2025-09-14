@@ -9,6 +9,7 @@ import { updateOrderToPaid } from "./order";
 import { insertProductSchema, updateProductSchema } from "@/lib/validator";
 import { z } from "zod";
 import { UpdateUser } from "@/types";
+import { Prisma } from "@prisma/client";
 
 export const getAllOrders = async ({ limit = PAGE_SIZE, page = 1 }) => {
   const orders = await prisma.order.findMany({
@@ -86,10 +87,28 @@ export const getAllProducts = async ({
   query?: string;
   category?: string;
 }) => {
+  // Query Filter
+  const queryFilter: Prisma.ProductWhereInput =
+    query && query !== "all"
+      ? {
+          name: {
+            contains: query,
+            mode: "insensitive",
+          } as Prisma.StringFilter,
+        }
+      : {};
+
+  // Category filter
+  const categoryFilter = category && category !== "all" ? { category } : {};
+
   const products = await prisma.product.findMany({
     take: limit,
     skip: (page - 1) * limit,
     orderBy: { createdAt: "desc" },
+    where: {
+      ...queryFilter,
+      ...categoryFilter,
+    },
   });
 
   const productsCount = await prisma.product.count();

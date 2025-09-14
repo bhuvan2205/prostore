@@ -43,9 +43,9 @@ const UpdateUserForm = (props: UpdateUserFormProps) => {
     defaultValues: user,
   });
 
-  const onSubmit = async (values: UpdateUser) => {
+  const onSubmit = async (formData: UpdateUser) => {
     const res = await updateUser({
-      ...values,
+      ...formData,
       id: user.id,
     });
 

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ReactNode } from "react";
 import UserMenu from "@/components/shared/header/user-menu";
 import MainNav from "./_components/main-nav";
-import { Input } from "@/components/ui/input";
+import AdminSearch from "./_components/admin-search";
 
 type RootLayoutProps = {
   children: ReactNode;
@@ -26,15 +26,9 @@ const AdminLayout = ({ children }: RootLayoutProps) => {
           </Link>
           <MainNav className="mx-6" />
           <div className="ml-auto flex items-center space-x-4">
-            <div>
-              <Input
-                type="search"
-                placeholder="Search..."
-                className="md:w-[100px] lg:w-[300px]"
-              />
-            </div>
-            <UserMenu />
+            <AdminSearch />
           </div>
+          <UserMenu />
         </div>
       </div>
       <div className="flex-1 space-y-4 p-8 pt-6 container mx-auto">
