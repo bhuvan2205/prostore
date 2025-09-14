@@ -1,12 +1,11 @@
 import { SESSION_CART_ID } from "@/constants/cart";
-import { PROTECTED_ROUTES, TRIGGER_EVENTS } from "@/constants/user";
+import { TRIGGER_EVENTS } from "@/constants/user";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { compare } from "bcrypt-ts-edge";
 import type { NextAuthConfig } from "next-auth";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
 import { prisma } from "./db";
 
 export const config = {
@@ -120,38 +119,6 @@ export const config = {
         token.name = session.user.name;
       }
       return token;
-    },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    authorized({ request, auth }: any) {
-      // Get the pathname from the request
-      const { pathname } = request.nextUrl;
-
-      // If the user is authenticated and the route is protected, return true
-      if (!auth && PROTECTED_ROUTES.some((route) => route.test(pathname))) {
-        return false;
-      }
-
-      if (!request.cookies.get(SESSION_CART_ID)) {
-        // Generate new session cart id cookie
-        const sessionCartId = crypto.randomUUID();
-
-        // Clone the req headers
-        const newRequestHeaders = new Headers(request.headers);
-
-        // Create new response and add the new headers
-        const response = NextResponse.next({
-          request: {
-            headers: newRequestHeaders,
-          },
-        });
-
-        // Set newly generated sessionCartId in the response cookies
-        response.cookies.set(SESSION_CART_ID, sessionCartId);
-
-        return response;
-      } else {
-        return true;
-      }
     },
   },
 } satisfies NextAuthConfig;
