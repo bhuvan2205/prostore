@@ -13,7 +13,6 @@ import Image from "next/image";
 import Link from "next/link";
 
 const ProductCarousel = ({ products }: { products: Product[] }) => {
-  console.log(products);
   return (
     <>
       <Carousel

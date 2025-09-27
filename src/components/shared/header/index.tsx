@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import UserMenu from "./user-menu";
 import CategoryDrawer from "./category-drawer";
+import SearchProduct from "./search-product";
 
 const Header = () => {
   return (
@@ -22,6 +23,9 @@ const Header = () => {
               {APP_NAME}
             </span>
           </Link>
+        </div>
+        <div className="hidden md:block">
+          <SearchProduct />
         </div>
         <UserMenu />
       </div>

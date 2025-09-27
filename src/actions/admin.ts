@@ -10,6 +10,7 @@ import { insertProductSchema, updateProductSchema } from "@/lib/validator";
 import { z } from "zod";
 import { UpdateUser } from "@/types";
 import { Prisma } from "@prisma/client";
+import { getProductSortOrder } from "@/lib/products";
 
 export const getAllOrders = async ({
   limit = PAGE_SIZE,
@@ -105,11 +106,17 @@ export const getAllProducts = async ({
   page = 1,
   category,
   query,
+  price,
+  rating,
+  sort,
 }: {
   limit?: number;
   page?: number;
   query?: string;
   category?: string;
+  price?: string;
+  rating?: string;
+  sort?: string;
 }) => {
   // Query Filter
   const queryFilter: Prisma.ProductWhereInput =
@@ -125,13 +132,30 @@ export const getAllProducts = async ({
   // Category filter
   const categoryFilter = category && category !== "all" ? { category } : {};
 
+  // Price filter
+  const priceFilter =
+    price && price !== "all"
+      ? {
+          price: {
+            gte: Number(price.split("-")[0]),
+            lte: Number(price.split("-")[1]),
+          },
+        }
+      : {};
+
+  // Rating filter
+  const ratingFilter =
+    rating && rating !== "all" ? { rating: { gte: Number(rating) } } : {};
+
   const products = await prisma.product.findMany({
     take: limit,
     skip: (page - 1) * limit,
-    orderBy: { createdAt: "desc" },
+    orderBy: getProductSortOrder(sort),
     where: {
       ...queryFilter,
       ...categoryFilter,
+      ...priceFilter,
+      ...ratingFilter,
     },
   });
 

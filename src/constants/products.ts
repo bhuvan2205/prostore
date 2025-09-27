@@ -19,3 +19,47 @@ export const CREATE_PRODUCT_DEFAULT_VALUES = {
   isFeatured: false,
   banner: getRandomBannerImage(),
 };
+
+export const PRICE_FILTERS = [
+  {
+    label: "$0 - $50",
+    value: "0-50",
+  },
+  {
+    label: "$51 - $100",
+    value: "51-100",
+  },
+  {
+    label: "$101 - $200",
+    value: "101-200",
+  },
+  {
+    label: "$201 - $500",
+    value: "201-500",
+  },
+  {
+    label: "$501 - $1000",
+    value: "501-1000",
+  },
+];
+
+export const RATING_FILTERS = [
+  {
+    label: "1 Star and above",
+    value: "1",
+  },
+  {
+    label: "2 Stars and above",
+    value: "2",
+  },
+  {
+    label: "3 Stars and above",
+    value: "3",
+  },
+  {
+    label: "4 Stars and above",
+    value: "4",
+  },
+];
+
+export const SORT_ORDERS = ["newest", "lowest", "highest", "rating"];
