@@ -122,3 +122,18 @@ export const updateUserSchema = updateProfileSchema.extend({
   id: z.string().min(1, "Id is required"),
   role: z.string().min(1, "Role is required"),
 });
+
+export const insertReviewFormSchema = z.object({
+  rating: z.coerce
+    .number()
+    .int()
+    .min(1, "Rating must be at least 1")
+    .max(5, "Rating must be at most 5"),
+  title: z.string().min(1, "Title is required"),
+  description: z.string().min(1, "Description is required"),
+});
+
+export const insertReviewSchema = insertReviewFormSchema.extend({
+  productId: z.string().min(1, "Prouct Id  is required"),
+  userId: z.string().min(1, "User Id is required"),
+});

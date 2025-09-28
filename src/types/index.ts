@@ -8,6 +8,8 @@ import {
   insertOrderSchema,
   paymentResultSchema,
   updateUserSchema,
+  insertReviewSchema,
+  insertReviewFormSchema,
 } from "@/lib/validator";
 import { z } from "zod";
 
@@ -17,7 +19,6 @@ export type Product = z.infer<typeof insertProductSchema> & {
   numReviews: number;
   createdAt: Date;
 };
-
 export type LineItem = z.infer<typeof lineItemSchema>;
 export type Cart = z.infer<typeof insertCartSchema>;
 export type ShippingAddress = z.infer<typeof shippingAddressSchema>;
@@ -39,3 +40,13 @@ export type Order = z.infer<typeof insertOrderSchema> & {
 };
 export type SalesData = { month: string; totalSales: number };
 export type UpdateUser = z.infer<typeof updateUserSchema>;
+export type InsertReviewForm = z.infer<typeof insertReviewFormSchema>;
+export type InsertReview = z.infer<typeof insertReviewSchema>;
+export type Review = z.infer<typeof insertReviewSchema> & {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  user?: {
+    name: string;
+  };
+};
