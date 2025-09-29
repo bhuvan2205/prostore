@@ -6,10 +6,11 @@ export const variables = {
   PAYPAL_API_URL: "PAYPAL_API_URL",
   PAYPAL_CLIENT_ID: "PAYPAL_CLIENT_ID",
   PAYPAL_SECRET_ID: "PAYPAL_SECRET_ID",
+  RESEND_API_KEY: "RESEND_API_KEY",
 };
 
 export const getEnv = (key: keyof typeof variables) => {
-  const value = process.env[key];
+  const value = process?.env?.[key];
   if (!value) {
     throw new Error(`Missing environment variable: ${key}`);
   }

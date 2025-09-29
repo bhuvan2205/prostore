@@ -8,9 +8,10 @@ import { ROUTES } from "@/constants/routes";
 import { insertOrderSchema } from "@/lib/validator";
 import { prisma } from "@/config/db";
 import { paypal } from "@/lib/paypal";
-import { PaymentResult } from "@/types";
+import { PaymentResult, ShippingAddress } from "@/types";
 import { revalidatePath } from "next/cache";
 import { Prisma } from "@prisma/client";
+import { sendPurchaseReceipt } from "@/email";
 
 export const createOrder = async () => {
   try {
@@ -265,6 +266,13 @@ export const updateOrderToPaid = async (payload: {
   });
 
   if (!updatedOrder) throw new Error("Order not found");
+
+  await sendPurchaseReceipt({
+    order: {
+      ...updatedOrder,
+      shippingAddress: updatedOrder.shippingAddress as ShippingAddress,
+    },
+  });
 };
 
 export const getMyOrders = async (payload: { limit: number; page: number }) => {
