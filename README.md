@@ -1,7 +1,5 @@
 ## Prostore
 
-![Prostore Preview](./public/readme/home.png)
-
 **Live production URL**: [`https://prostore-mu-five.vercel.app`](https://prostore-mu-five.vercel.app)
 
 Prostore is an e‑commerce storefront built with Next.js and deployed on Vercel.
